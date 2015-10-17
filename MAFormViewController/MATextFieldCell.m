@@ -28,7 +28,7 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
     statesNameAbbreviationsArray = [self setupStatesNamesAbbreviationArray];
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    
+    _selectedEntry = nil;
     _type = type ?: MATextFieldTypeDefault;
     _action = action ?: MATextFieldActionTypeNone;
     _actionHandler = handler ?: ^{};
@@ -426,6 +426,10 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
 numberOfRowsInComponent:(NSInteger)component
 {
     return statesNameAbbreviationsArray.count + 1;
+}
+
+-(void) pickerView:(UIPickerView*) pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
+    _selectedEntry = (row == 0 ? nil    :  statesNameAbbreviationsArray[row -1]);
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView

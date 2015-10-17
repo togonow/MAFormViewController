@@ -154,7 +154,13 @@ static NSInteger const kDiscardUnsavedChangesIndex = 1;
         for (int cellIndex = 0; cellIndex < sectionConfig.count; cellIndex++) {
             MAFormField *field = _cellConfig[sectionIndex][cellIndex];
             MATextFieldCell *cell = _sections[sectionIndex][cellIndex];
-            NSString *valueForField = cell.textField.text ?: @"";
+            NSString *valueForField;
+            if(cell.type == MATextFieldTypeStateDropDownList){
+                valueForField = cell.selectedEntry ?: @"";
+            }else{
+                valueForField = cell.textField.text ?: @"";
+            }
+
             resultDictionary[field.key ?: [NSNull null]] = valueForField;
         }
     }

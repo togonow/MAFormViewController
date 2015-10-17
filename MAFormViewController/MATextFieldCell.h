@@ -41,7 +41,7 @@ enum MATextFieldActionType: NSUInteger {
 }
 
 @property (nonatomic, assign)     enum MATextFieldType type;
-
+@property (nonatomic, retain) NSString* selectedEntry;
 @property (nonatomic, retain) MAFormViewController *delegate;
 @property (nonatomic, retain) UITextField *textField;
 @property (nonatomic, retain) UIPickerView *pickerField;
