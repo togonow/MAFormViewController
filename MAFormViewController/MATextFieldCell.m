@@ -20,9 +20,12 @@ static CGFloat const kPlaceholderLabelAnimationDuration = 0.3;
 static CGFloat const kDefaultSuggestedHeight = 44;
 static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
 
-@implementation MATextFieldCell
+@implementation MATextFieldCell{
+    NSArray *statesNameAbbreviationsArray;
+}
 
 - (instancetype)initWithFieldType:(enum MATextFieldType)type action:(enum MATextFieldActionType)action animatePlaceholder:(BOOL)animate actionHandler:(void (^)(void))handler {
+    statesNameAbbreviationsArray = [self setupStatesNamesAbbreviationArray];
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -31,7 +34,12 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
     _actionHandler = handler ?: ^{};
     _shouldAttemptFormat = YES;
     _animatePlaceholder = animate;
-    _suggestedHeight = animate ? kHeightIfUsingAnimatedPlaceholder : kDefaultSuggestedHeight;
+    if(_type == MATextFieldTypeStateDropDownList){
+        _suggestedHeight = 150;
+    }else{
+        _suggestedHeight = (animate ? kHeightIfUsingAnimatedPlaceholder : kDefaultSuggestedHeight);
+    }
+
     
     [self configureTextField];
     
@@ -42,30 +50,37 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
 #pragma mark - Text field configuration
 
 - (void)configureTextField {
-    self.textField = [UITextField new];
-    self.textField.frame = _animatePlaceholder ? CGRectMake(kTextFieldHorizontalPadding, CGRectGetHeight(self.contentView.frame) * .33, CGRectGetWidth(self.contentView.frame) - (2 * kTextFieldHorizontalPadding), CGRectGetHeight(self.contentView.frame) * .66) : CGRectMake(kTextFieldHorizontalPadding, kTextFieldVerticalPadding, CGRectGetWidth(self.contentView.frame) - (2 * kTextFieldHorizontalPadding), CGRectGetHeight(self.contentView.frame) - (2 * kTextFieldVerticalPadding));
+    self.pickerField = [UIPickerView new];    self.textField = [UITextField new];
+
+    CGRect frame = _animatePlaceholder ? CGRectMake(kTextFieldHorizontalPadding, CGRectGetHeight(self.contentView.frame) * .33, CGRectGetWidth(self.contentView.frame) - (2 * kTextFieldHorizontalPadding), CGRectGetHeight(self.contentView.frame) * .66) : CGRectMake(kTextFieldHorizontalPadding, kTextFieldVerticalPadding, CGRectGetWidth(self.contentView.frame) - (2 * kTextFieldHorizontalPadding), CGRectGetHeight(self.contentView.frame) - (2 * kTextFieldVerticalPadding));
+    self.textField.frame = frame;
+    frame.size.height = 150; frame.origin.y = frame.origin.y - 5; self.pickerField.frame = frame;   // setup the frame for the selectedState
     self.textField.delegate = self;
+    self.pickerField.dataSource = self  ; self.pickerField.delegate = self;
     self.textField.autoresizingMask = UIViewAutoresizingFlexibleHeight + UIViewAutoresizingFlexibleWidth;
-    [self.contentView addSubview:self.textField];
+    self.pickerField.autoresizingMask = UIViewAutoresizingFlexibleHeight + UIViewAutoresizingFlexibleWidth;
+
     
     BOOL requiresToolbar = NO;
-    
     // based on the type of the field, we want to format the textfield according
     // to the most user-friendly conventions. Any of these values can be overridden
     // later if users want to customize further. Any of the fields with numeric keyboard
     // types require a toolbar to handle the next/done functionality
     switch (_type) {
         case MATextFieldTypeDefault:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
             self.textField.autocorrectionType = UITextAutocorrectionTypeYes;
             self.textField.keyboardType = UIKeyboardTypeDefault;
             break;
         case MATextFieldTypeName:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeDefault;
             break;
         case MATextFieldTypePhone:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeNumberPad;
@@ -73,39 +88,46 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
             requiresToolbar = YES;
             break;
         case MATextFieldTypeEmail:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeEmailAddress;
             break;
         case MATextFieldTypeAddress:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
             self.textField.autocorrectionType = UITextAutocorrectionTypeYes;
             self.textField.keyboardType = UIKeyboardTypeDefault;
             break;
         case MATextFieldTypeStateAbbr:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeAllCharacters;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeDefault;
             break;
         case MATextFieldTypeZIP:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeNumberPad;
             requiresToolbar = YES;
             break;
         case MATextFieldTypeNumber:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeNumberPad;
             requiresToolbar = YES;
             break;
         case MATextFieldTypeDecimal:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeDecimalPad;
             requiresToolbar = YES;
             break;
         case MATextFieldTypeDate:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeNumberPad;
@@ -113,20 +135,32 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
             requiresToolbar = YES;
             break;
         case MATextFieldTypePassword:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeDefault;
             self.textField.secureTextEntry = YES;
             break;
         case MATextFieldTypeURL:
+            [self.contentView addSubview:self.textField];
             self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
             self.textField.keyboardType = UIKeyboardTypeURL;
             break;
         case MATextFieldTypeNonEditable:
+            [self.contentView addSubview:self.textField];
             self.textField.enabled = NO;
             break;
+        case MATextFieldTypeStateDropDownList:
+            [self.contentView addSubview:self.pickerField];
+            self.textField.hidden = true ; self.pickerField.hidden = false;
+            self.pickerField.dataSource = self;
+            
+            break;
     }
+    
+    
+    
     
     // if any of the fields require a toolbar, set up the toolbar with the appropriate title,
     // otherwise set the appropriate return key type on the keyboard
@@ -378,6 +412,32 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
     self.textField.text = formattedString;
 }
 
+
+#pragma mark -
+#pragma mark PickerView DataSource
+
+- (NSInteger)numberOfComponentsInPickerView:
+(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView
+numberOfRowsInComponent:(NSInteger)component
+{
+    return statesNameAbbreviationsArray.count;
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView
+             titleForRow:(NSInteger)row
+            forComponent:(NSInteger)component
+{
+    return statesNameAbbreviationsArray[row];
+}
+
+-(NSArray*) setupStatesNamesAbbreviationArray{
+    return [NSArray arrayWithObjects:@"Alabama", @"Alaska", @"Arizona", @"Arkansas", @"California", @"Colorado", @"Connecticut", @"Delaware", @"Florida", @"Georgia", @"Hawaii", @"Idaho", @"Illinois", @"Indiana", @"Iowa", @"Kansas", @"Kentucky", @"Louisiana", @"Maine", @"Maryland", @"Massachusetts", @"Michigan", @"Minnesota", @"Mississippi", @"Missouri", @"Montana", @"Nebraska", @"Nevada", @"New Hampshire", @"New Jersey", @"New Mexico", @"New York", @"North Carolina", @"North Dakota", @"Ohio", @"Oklahoma", @"Oregon", @"Pennsylvania", @"Rhode Island", @"South Carolina", @"South Dakota", @"Tennessee", @"Texas", @"Utah", @"Vermont", @"Virginia", @"Washington", @"West Virginia", @"Wisconsin", @"Wyoming", nil];
+}
 
 
 @end

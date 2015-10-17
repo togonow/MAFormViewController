@@ -41,13 +41,17 @@
     MAFormField *street = [MAFormField fieldWithKey:@"street" type:MATextFieldTypeAddress initialValue:nil placeholder:@"Street" required:YES];
     MAFormField *city = [MAFormField fieldWithKey:@"city" type:MATextFieldTypeAddress initialValue:nil placeholder:@"City" required:YES];
     MAFormField *state = [MAFormField fieldWithKey:@"state" type:MATextFieldTypeStateAbbr initialValue:nil placeholder:@"State" required:YES];
+
+    MAFormField *stateDDL = [MAFormField fieldWithKey:@"state" type:MATextFieldTypeStateDropDownList initialValue:nil placeholder:@"State" required:YES];
+    
+    
     MAFormField *zip = [MAFormField fieldWithKey:@"zip" type:MATextFieldTypeZIP initialValue:nil placeholder:@"ZIP" required:YES];
     MAFormField *date = [MAFormField fieldWithKey:@"date" type:MATextFieldTypeDate initialValue:nil placeholder:@"Date (MM/DD/YYYY)" required:NO];
     MAFormField *disabledField = [MAFormField fieldWithKey:@"disabled" type:MATextFieldTypeNonEditable initialValue:@"This is not editable." placeholder:@"Disabled Field" required:NO];
 
     // separate the cells into sections
     NSArray *firstSection = @[name, phone, email];
-    NSArray *secondSection = @[street, city, state, zip];
+    NSArray *secondSection = @[street, city, state, stateDDL, zip];
     NSArray *thirdSection = @[date, disabledField];
     NSArray *cellConfig = @[firstSection, secondSection, thirdSection];
     
