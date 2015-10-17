@@ -191,16 +191,31 @@ static NSInteger const kDiscardUnsavedChangesIndex = 1;
             
             // if this field is required
             if (field.required) {
-                // get a reference to the cell and it's field
-                MATextFieldCell *cell = _sections[sectionIndex][cellIndex];
-                UITextField *field = cell.textField;
                 
-                // if there's no text in the field
-                if (field.text.length == 0) {
-                    [cell.textField becomeFirstResponder];
-                    [[[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@ is required.", field.placeholder] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-                    return NO;
+                
+                // get a reference to the cell and it's field
+                
+                MATextFieldCell *cell = _sections[sectionIndex][cellIndex];
+                if (cell.type == MATextFieldTypeStateDropDownList) {
+                    UIPickerView *pickerView = cell.pickerField;
+                    NSInteger idxSelected = [pickerView selectedRowInComponent:0];
+                    if (idxSelected == 0) {
+                        [[[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@ is required.", field.placeholder] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                        [cell.pickerField becomeFirstResponder];
+                        return NO;
+                    }
+                }else{
+                    UITextField *field = cell.textField;
+                    // if there's no text in the field
+                    if (field.text.length == 0) {
+                        [cell.textField becomeFirstResponder];
+                        [[[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@ is required.", field.placeholder] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                        return NO;
+                    }
                 }
+                
+                
+
             }
         }
     }

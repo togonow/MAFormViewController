@@ -33,13 +33,14 @@ enum MATextFieldActionType: NSUInteger {
 };
 
 @interface MATextFieldCell : UITableViewCell <UITextFieldDelegate, UIPickerViewDataSource> {
-    NSUInteger _type;
     NSUInteger _action;
     BOOL _shouldAttemptFormat;
     void (^_actionHandler)(void);
     UILabel *_placeholderLabel;
     BOOL _animatePlaceholder;
 }
+
+@property (nonatomic, assign)     enum MATextFieldType type;
 
 @property (nonatomic, retain) MAFormViewController *delegate;
 @property (nonatomic, retain) UITextField *textField;

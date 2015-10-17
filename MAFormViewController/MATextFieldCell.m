@@ -425,14 +425,14 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
 - (NSInteger)pickerView:(UIPickerView *)pickerView
 numberOfRowsInComponent:(NSInteger)component
 {
-    return statesNameAbbreviationsArray.count;
+    return statesNameAbbreviationsArray.count + 1;
 }
 
 - (NSString *)pickerView:(UIPickerView *)pickerView
              titleForRow:(NSInteger)row
             forComponent:(NSInteger)component
 {
-    return statesNameAbbreviationsArray[row];
+    return  (row == 0 ? @"Pick a State" :    statesNameAbbreviationsArray[row]);
 }
 
 -(NSArray*) setupStatesNamesAbbreviationArray{
