@@ -151,11 +151,19 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
             [self.contentView addSubview:self.textField];
             self.textField.enabled = NO;
             break;
+        case MATextFieldTypeSubDomain:
+            [self.contentView addSubview:self.textField];
+            self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+            self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+            self.textField.keyboardType = UIKeyboardTypeURL;
+            [self.textField addTarget:self action:@selector(formatSubDomain) forControlEvents:UIControlEventEditingChanged];
+            
+            requiresToolbar = YES;
+            break;
         case MATextFieldTypeStateDropDownList:
             [self.contentView addSubview:self.pickerField];
             self.textField.hidden = true ; self.pickerField.hidden = false;
             self.pickerField.dataSource = self;
-            
             break;
     }
     
@@ -335,6 +343,22 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
 }
 
 
+#pragma mark - SubDomain formatting
+-(void)formatSubDomain{
+    // this value is determined when textField shouldChangeCharactersInRange is called on a phone
+    // number cell - if a user is deleting characters we don't want to try to format it, otherwise
+    // using the current logic below certain deletions will have no effect
+    if (!_shouldAttemptFormat) {
+        return;
+    }
+    NSString *domainname = @"togonow.menu";
+    NSString *currentString = self.textField.text;
+    NSString *strippedValue = [currentString stringByReplacingOccurrencesOfString:@"[^a-zA-Z0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, currentString.length)];
+    _placeholderLabel.text = [NSString stringWithFormat:@"http://%@.%@",strippedValue, domainname];
+    self.textField.text = strippedValue;
+    
+}
+
 #pragma mark - phone number formatting
 
 - (void)formatPhoneNumber {
@@ -349,7 +373,7 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
     // the phone number... first we strip anything that's not a number from the textfield, and then
     // depending on the current value we append formatting characters to make it pretty
     NSString *currentString = self.textField.text;
-    NSString *strippedValue = [currentString stringByReplacingOccurrencesOfString:@"[^0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, currentString.length)];
+    NSString *strippedValue = [currentString stringByReplacingOccurrencesOfString:@"[^a-zA-Z0-9]" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, currentString.length)];
 
     NSString *formattedString;
     if (strippedValue.length == 0) {

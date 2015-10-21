@@ -23,7 +23,8 @@ enum MATextFieldType : NSUInteger {
     MATextFieldTypeDate,
     MATextFieldTypePassword,
     MATextFieldTypeURL,
-    MATextFieldTypeNonEditable
+    MATextFieldTypeNonEditable,
+    MATextFieldTypeSubDomain
 };
 
 enum MATextFieldActionType: NSUInteger {
@@ -32,7 +33,7 @@ enum MATextFieldActionType: NSUInteger {
     MATextFieldActionTypeDone
 };
 
-@interface MATextFieldCell : UITableViewCell <UITextFieldDelegate, UIPickerViewDataSource> {
+@interface MATextFieldCell : UITableViewCell <UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate> {
     NSUInteger _action;
     BOOL _shouldAttemptFormat;
     void (^_actionHandler)(void);
