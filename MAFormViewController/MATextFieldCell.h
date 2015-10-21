@@ -46,6 +46,7 @@ enum MATextFieldActionType: NSUInteger {
 @property (nonatomic, retain) MAFormViewController *delegate;
 @property (nonatomic, retain) UITextField *textField;
 @property (nonatomic, retain) UIPickerView *pickerField;
+@property (nonatomic, retain) UILabel *titleLabel;
 @property (readonly) CGFloat suggestedHeight;
 
 - (instancetype)initWithFieldType:(enum MATextFieldType)type action:(enum MATextFieldActionType)action animatePlaceholder:(BOOL)animate actionHandler:(void (^)(void))handler;

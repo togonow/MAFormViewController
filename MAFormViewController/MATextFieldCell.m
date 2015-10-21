@@ -50,11 +50,36 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
 #pragma mark - Text field configuration
 
 - (void)configureTextField {
-    self.pickerField = [UIPickerView new];    self.textField = [UITextField new];
+    self.pickerField = [UIPickerView new];    self.textField = [UITextField new]; self.titleLabel = [UILabel new];
 
     CGRect frame = _animatePlaceholder ? CGRectMake(kTextFieldHorizontalPadding, CGRectGetHeight(self.contentView.frame) * .33, CGRectGetWidth(self.contentView.frame) - (2 * kTextFieldHorizontalPadding), CGRectGetHeight(self.contentView.frame) * .66) : CGRectMake(kTextFieldHorizontalPadding, kTextFieldVerticalPadding, CGRectGetWidth(self.contentView.frame) - (2 * kTextFieldHorizontalPadding), CGRectGetHeight(self.contentView.frame) - (2 * kTextFieldVerticalPadding));
     self.textField.frame = frame;
-    frame.size.height = 150; frame.origin.y = frame.origin.y - 5; self.pickerField.frame = frame;   // setup the frame for the selectedState
+    
+    CGRect pickerFrame = _animatePlaceholder ?
+    
+        CGRectMake(
+        //X
+        kTextFieldHorizontalPadding + 150
+        // Y
+        , _suggestedHeight * .33
+        // W
+       , CGRectGetWidth(self.contentView.frame) - (2 * kTextFieldHorizontalPadding)
+       // H
+       , _suggestedHeight * .66)
+    
+    : CGRectMake(
+        //X
+        kTextFieldHorizontalPadding + 150
+       // Y
+       , kTextFieldVerticalPadding
+       // W
+       , CGRectGetWidth(self.contentView.frame) - (2 * kTextFieldHorizontalPadding)
+       // H
+       , _suggestedHeight - (2 * kTextFieldVerticalPadding));
+    
+//    frame.size.height = 150; frame.origin.y = frame.origin.y - 5; frame.origin.x = frame.origin.x + 20;
+    self.titleLabel.frame = frame;
+    self.pickerField.frame = pickerFrame;   // setup the frame for the selectedState
     self.textField.delegate = self;
     self.pickerField.dataSource = self  ; self.pickerField.delegate = self;
     self.textField.autoresizingMask = UIViewAutoresizingFlexibleHeight + UIViewAutoresizingFlexibleWidth;
@@ -161,7 +186,7 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
             requiresToolbar = YES;
             break;
         case MATextFieldTypeStateDropDownList:
-            [self.contentView addSubview:self.pickerField];
+            [self.contentView addSubview:self.pickerField]; [self.contentView addSubview:self.titleLabel];
             self.textField.hidden = true ; self.pickerField.hidden = false;
             self.pickerField.dataSource = self;
             break;
@@ -197,6 +222,7 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
 
 - (void)setInitialValue:(NSString *)initialValue placeholder:(NSString *)placeholder {
     self.textField.placeholder = placeholder;
+    self.titleLabel.text = placeholder;
 
     if (initialValue) {
         self.textField.text = initialValue;
