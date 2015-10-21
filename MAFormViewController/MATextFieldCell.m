@@ -59,7 +59,7 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
     
         CGRectMake(
         //X
-        kTextFieldHorizontalPadding + 150
+        kTextFieldHorizontalPadding + 100
         // Y
         , _suggestedHeight * .33
         // W
@@ -69,7 +69,7 @@ static CGFloat const kHeightIfUsingAnimatedPlaceholder = 55;
     
     : CGRectMake(
         //X
-        kTextFieldHorizontalPadding + 150
+        kTextFieldHorizontalPadding + 100
        // Y
        , kTextFieldVerticalPadding
        // W
