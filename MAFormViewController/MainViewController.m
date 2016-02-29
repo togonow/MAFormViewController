@@ -38,6 +38,7 @@
     MAFormField *name = [MAFormField fieldWithKey:@"name" type:MATextFieldTypeName initialValue:nil placeholder:@"Full Name" required:YES];
     MAFormField *phone = [MAFormField fieldWithKey:@"phone" type:MATextFieldTypePhone initialValue:nil placeholder:@"Phone Number" required:YES];
     MAFormField *email = [MAFormField fieldWithKey:@"email" type:MATextFieldTypeEmail initialValue:nil placeholder:@"Email (optional)" required:NO];
+    
     MAFormField *street = [MAFormField fieldWithKey:@"street" type:MATextFieldTypeAddress initialValue:nil placeholder:@"Street" required:YES];
     MAFormField *city = [MAFormField fieldWithKey:@"city" type:MATextFieldTypeAddress initialValue:nil placeholder:@"City" required:YES];
     MAFormField *state = [MAFormField fieldWithKey:@"state" type:MATextFieldTypeStateAbbr initialValue:nil placeholder:@"State" required:YES];
@@ -48,6 +49,7 @@
     MAFormField *zip = [MAFormField fieldWithKey:@"zip" type:MATextFieldTypeZIP initialValue:nil placeholder:@"ZIP" required:YES];
     MAFormField *date = [MAFormField fieldWithKey:@"date" type:MATextFieldTypeDate initialValue:nil placeholder:@"Date (MM/DD/YYYY)" required:NO];
     MAFormField *disabledField = [MAFormField fieldWithKey:@"disabled" type:MATextFieldTypeNonEditable initialValue:@"This is not editable." placeholder:@"Disabled Field" required:NO];
+    
 
     // separate the cells into sections
     NSArray *firstSection = @[name, phone, email, subDomain];
@@ -70,6 +72,7 @@
         [[[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"Thanks for registering %@!", resultDictionary[@"name"]] delegate:nil cancelButtonTitle:@"Yay!" otherButtonTitles:nil] show];
         NSLog(@"%@", [resultDictionary description]);
     }];
+    formVC.firstResponderFormField = email;
 
     [formVC setTitleForHeaderInSectionBlock:^NSString *(NSInteger section) {
         if (section == 1) {
@@ -80,6 +83,8 @@
             return nil;
         }
     }];
+    
+    
 
     [formVC setTitleForFooterInSectionBlock:^NSString *(NSInteger section) {
         if (section == 2) {

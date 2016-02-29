@@ -60,6 +60,13 @@ static NSInteger const kDiscardUnsavedChangesIndex = 1;
     // become the first responder so the keyboard is already
     // on screen
     [_firstField becomeFirstResponder];
+    if (self.firstResponderFormField) {
+        [_firstResponderField becomeFirstResponder];
+    }else{
+        [_firstField becomeFirstResponder];
+    }
+    
+    
 }
 
 - (void)generateCells {
@@ -87,7 +94,7 @@ static NSInteger const kDiscardUnsavedChangesIndex = 1;
             
             // get the field for this cell in this section
             MAFormField *field = _cellConfig[sectionIndex][cellIndex];
-            
+
             // create the cell with the given type, the appropriate action, and the action handler
             // will set the correct field as the first responder or resign the first responder appropriately
             MATextFieldCell *cell = [[MATextFieldCell alloc] initWithFieldType:field.fieldType action:action animatePlaceholder:_animatePlaceholders actionHandler:^{
@@ -118,6 +125,11 @@ static NSInteger const kDiscardUnsavedChangesIndex = 1;
             if (firstCell) {
                 _firstField = cell.textField;
             }
+            
+            if (self.firstResponderFormField && self.firstResponderFormField == field) {
+                _firstResponderField = cell.textField;
+            }
+            
             
             if (lastCell) {
                 _lastField = cell.textField;
@@ -207,7 +219,11 @@ static NSInteger const kDiscardUnsavedChangesIndex = 1;
                     NSInteger idxSelected = [pickerView selectedRowInComponent:0];
                     if (idxSelected == 0) {
                         [[[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"%@ is required.", field.placeholder] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                        
+                        
                         [cell.pickerField becomeFirstResponder];
+                        
+                        
                         return NO;
                     }
                 }else{

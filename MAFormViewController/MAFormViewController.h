@@ -8,12 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class MAFormField;
+
 @interface MAFormViewController : UITableViewController <UIAlertViewDelegate> {
     NSMutableArray *_sections;
     NSArray *_cellConfig;
     void(^_actionHandler)(NSDictionary *);
     UITextField *_firstField;
     UITextField *_lastField;
+    UITextField *_firstResponderField;
     BOOL _animatePlaceholders;
 }
 
@@ -24,7 +27,11 @@
 @property (nonatomic, copy) NSString * (^titleForHeaderInSectionBlock)(NSInteger section);
 @property (nonatomic, copy) NSString * (^titleForFooterInSectionBlock)(NSInteger section);
 
+
+@property (nonatomic, weak) MAFormField * firstResponderFormField;
+
 - (instancetype)initWithCellConfigurations:(NSArray *)cellConfig actionText:(NSString *)actionText animatePlaceholders:(BOOL)animatePlaceholders handler:(void (^)(NSDictionary *resultDictionary))handler;
+
 
 // exposed as a delegate method for MATextFieldCell
 - (void)markFormHasBeenEdited;
