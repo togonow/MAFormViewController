@@ -28,7 +28,7 @@
 @property (nonatomic, copy) NSString * (^titleForFooterInSectionBlock)(NSInteger section);
 
 
-@property (nonatomic, weak) MAFormField * firstResponderFormField;
+@property (nonatomic, retain) MAFormField * firstResponderFormField;
 
 - (instancetype)initWithCellConfigurations:(NSArray *)cellConfig actionText:(NSString *)actionText animatePlaceholders:(BOOL)animatePlaceholders handler:(void (^)(NSDictionary *resultDictionary))handler;
 

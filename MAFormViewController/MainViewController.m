@@ -72,7 +72,8 @@
         [[[UIAlertView alloc] initWithTitle:nil message:[NSString stringWithFormat:@"Thanks for registering %@!", resultDictionary[@"name"]] delegate:nil cancelButtonTitle:@"Yay!" otherButtonTitles:nil] show];
         NSLog(@"%@", [resultDictionary description]);
     }];
-    formVC.firstResponderFormField = email;
+    formVC.firstResponderFormField = email;     // override the first responder field;
+
 
     [formVC setTitleForHeaderInSectionBlock:^NSString *(NSInteger section) {
         if (section == 1) {
